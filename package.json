@@ -11,6 +11,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:e2e:local": "node scripts/local-api-smoke.mjs",
+    "test:e2e:ui": "npm run test:e2e:local && playwright test",
+    "test:e2e:ui:docker": "npm run test:e2e:local && node scripts/run-ui-e2e-docker.mjs",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -29,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.64.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.1",

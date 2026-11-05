@@ -109,7 +109,14 @@ values
   );
 
 select is(
-  (select count(*) from public.task_status_history),
+  (
+    select count(*)
+    from public.task_status_history
+    where task_id in (
+      'c0000000-0000-0000-0000-000000000001',
+      'c0000000-0000-0000-0000-000000000002'
+    )
+  ),
   2::bigint,
   'создание задач автоматически записано в историю'
 );
@@ -121,17 +128,17 @@ select is((select count(*) from public.tasks), 1::bigint, 'исполнител�
 select is((select count(*) from public.objects), 1::bigint, 'исполнитель видит только связанный объект');
 select is((select count(*) from public.profiles), 2::bigint, 'исполнитель видит только нужные профили');
 
+update public.tasks
+set title = 'Чужое изменение'
+where id = 'c0000000-0000-0000-0000-000000000001';
+
 select is(
   (
-    with changed as (
-      update public.tasks
-      set title = 'Чужое изменение'
-      where id = 'c0000000-0000-0000-0000-000000000001'
-      returning 1
-    )
-    select count(*) from changed
+    select title
+    from public.tasks
+    where id = 'c0000000-0000-0000-0000-000000000001'
   ),
-  0::bigint,
+  'Задача первого исполнителя',
   'исполнитель не может редактировать поля задачи напрямую'
 );
 
@@ -203,7 +210,18 @@ reset role;
 set local role authenticated;
 select set_config('request.jwt.claim.sub', 'a0000000-0000-0000-0000-000000000001', true);
 
-select is((select count(*) from public.tasks), 2::bigint, 'постановщик видит все активные задачи');
+select is(
+  (
+    select count(*)
+    from public.tasks
+    where id in (
+      'c0000000-0000-0000-0000-000000000001',
+      'c0000000-0000-0000-0000-000000000002'
+    )
+  ),
+  2::bigint,
+  'постановщик видит обе тестовые задачи'
+);
 
 select throws_ok(
   $$select public.transition_task('c0000000-0000-0000-0000-000000000002', 'revision', '   ')$$,
@@ -241,7 +259,18 @@ select lives_ok(
   'постановщик мягко удаляет задачу'
 );
 
-select is((select count(*) from public.tasks), 1::bigint, 'архивная задача скрыта политикой RLS');
+select is(
+  (
+    select count(*)
+    from public.tasks
+    where id in (
+      'c0000000-0000-0000-0000-000000000001',
+      'c0000000-0000-0000-0000-000000000002'
+    )
+  ),
+  1::bigint,
+  'архивная тестовая задача скрыта политикой RLS'
+);
 
 select lives_ok(
   $$select public.archive_object('b0000000-0000-0000-0000-000000000002')$$,
