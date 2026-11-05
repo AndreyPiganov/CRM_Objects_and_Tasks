@@ -16,6 +16,7 @@
 - создание записи истории после разрешённого перехода;
 - запрет удаления истории через REST даже постановщику;
 - production preview маршрутов `/`, `/objects` и `/tasks/:id` с HTTP 200;
+- два Playwright/Chromium UI-сценария: создание объекта постановщиком и работа исполнителя со своей задачей;
 - ESLint, 15 unit-тестов, production-сборка и `npm audit` без уязвимостей.
 
 Воспроизведение после `npx supabase@latest start`:
@@ -23,6 +24,7 @@
 ```bash
 npx supabase@latest test db
 npm run test:e2e:local
+npm run test:e2e:ui:docker
 npm run lint
 npm test
 npm run build
