@@ -15,6 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { archiveObject, getObject, updateObject, type ObjectInput } from '../api/objects'
 import { useAuth } from '../auth/useAuth'
 import { ConfirmDialog } from '../components/ConfirmDialog'
+import { ObjectTaskList } from '../components/ObjectTaskList'
 import { ObjectFormDialog } from '../components/ObjectFormDialog'
 import { getErrorMessage } from '../lib/errors'
 
@@ -105,10 +106,7 @@ export function ObjectPage() {
           )}
         </Box>
       </Paper>
-      <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
-        Задачи
-      </Typography>
-      <Alert severity="info">Для этого объекта пока нет доступных задач.</Alert>
+      <ObjectTaskList objectId={object.id} />
 
       <ObjectFormDialog
         open={formOpen}

@@ -4,9 +4,10 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { RoleRoute } from './components/RoleRoute'
 import { AppShell } from './layouts/AppShell'
 import { LoginPage } from './pages/LoginPage'
+import { MyTasksPage } from './pages/MyTasksPage'
 import { ObjectPage } from './pages/ObjectPage'
 import { ObjectsPage } from './pages/ObjectsPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
+import { TaskPage } from './pages/TaskPage'
 
 export function App() {
   return (
@@ -17,9 +18,9 @@ export function App() {
           <Route element={<AppShell />}>
             <Route path="/objects" element={<ObjectsPage />} />
             <Route path="/objects/:objectId" element={<ObjectPage />} />
-            <Route path="/tasks/:taskId" element={<PlaceholderPage title="Карточка задачи" />} />
+            <Route path="/tasks/:taskId" element={<TaskPage />} />
             <Route element={<RoleRoute allowed={['executor']} />}>
-              <Route path="/my-tasks" element={<PlaceholderPage title="Мои задачи" />} />
+              <Route path="/my-tasks" element={<MyTasksPage />} />
             </Route>
           </Route>
         </Route>
