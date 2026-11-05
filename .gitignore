@@ -4,6 +4,8 @@ coverage/
 .env
 .env.local
 .env.*.local
+supabase/.branches/
+supabase/.temp/
 *.log
 .DS_Store
 .idea/

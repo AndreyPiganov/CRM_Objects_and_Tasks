@@ -121,17 +121,17 @@ select is((select count(*) from public.tasks), 1::bigint, 'исполнител�
 select is((select count(*) from public.objects), 1::bigint, 'исполнитель видит только связанный объект');
 select is((select count(*) from public.profiles), 2::bigint, 'исполнитель видит только нужные профили');
 
+update public.tasks
+set title = 'Чужое изменение'
+where id = 'c0000000-0000-0000-0000-000000000001';
+
 select is(
   (
-    with changed as (
-      update public.tasks
-      set title = 'Чужое изменение'
-      where id = 'c0000000-0000-0000-0000-000000000001'
-      returning 1
-    )
-    select count(*) from changed
+    select title
+    from public.tasks
+    where id = 'c0000000-0000-0000-0000-000000000001'
   ),
-  0::bigint,
+  'Задача первого исполнителя',
   'исполнитель не может редактировать поля задачи напрямую'
 );
 
