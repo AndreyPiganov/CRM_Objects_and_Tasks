@@ -7,14 +7,14 @@ export type TaskStatus =
   | 'accepted'
   | 'revision'
 
-export interface Profile {
+export type Profile = {
   id: string
   display_name: string
   role: UserRole
   created_at: string
 }
 
-export interface ConstructionObject {
+export type ConstructionObject = {
   id: string
   name: string
   address: string
@@ -25,7 +25,7 @@ export interface ConstructionObject {
   deleted_by: string | null
 }
 
-export interface Task {
+export type Task = {
   id: string
   title: string
   description: string
@@ -39,7 +39,7 @@ export interface Task {
   deleted_by: string | null
 }
 
-export interface TaskStatusHistory {
+export type TaskStatusHistory = {
   id: string
   task_id: string
   actor_id: string
