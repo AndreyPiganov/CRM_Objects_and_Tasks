@@ -12,10 +12,11 @@ import {
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { revisionCommentSchema } from '../domain/taskValidation'
 import { getErrorMessage } from '../lib/errors'
 
 const revisionSchema = z.object({
-  comment: z.string().trim().min(1, 'Комментарий обязателен').max(2000, 'Не более 2000 символов'),
+  comment: revisionCommentSchema,
 })
 
 interface RevisionDialogProps {
