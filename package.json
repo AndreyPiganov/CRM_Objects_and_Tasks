@@ -11,10 +11,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:e2e:local": "node scripts/local-api-smoke.mjs",
-    "test:e2e:compose": "node scripts/local-api-smoke.mjs --compose",
-    "test:e2e:ui": "npm run test:e2e:local && playwright test",
-    "test:e2e:ui:docker": "npm run test:e2e:local && node scripts/run-ui-e2e-docker.mjs",
+    "test:e2e": "playwright test",
     "test:watch": "vitest"
   },
   "dependencies": {
