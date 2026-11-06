@@ -1,6 +1,6 @@
 # Локальная проверка перед публикацией
 
-Проверка выполнена 5 ноября 2026 года на Node.js 24.22.2, Supabase CLI 3.0.0 и локальном Supabase/PostgreSQL 17.
+Проверка обновлена 6 ноября 2026 года на Node.js 24, Docker Compose, локальном Supabase/PostgreSQL 17 и Nginx.
 
 Успешно выполнены:
 
@@ -17,9 +17,19 @@
 - запрет удаления истории через REST даже постановщику;
 - production preview маршрутов `/`, `/objects` и `/tasks/:id` с HTTP 200;
 - два Playwright/Chromium UI-сценария: создание объекта постановщиком и работа исполнителя со своей задачей;
+- чистый запуск единого Compose-стека с PostgreSQL, Auth, PostgREST, Studio и Nginx;
+- повторный Compose-запуск без повторного применения миграций, дублирования пользователей и сброса данных;
 - ESLint, 15 unit-тестов, production-сборка и `npm audit` без уязвимостей.
 
-Воспроизведение после `npx supabase@latest start`:
+Основная Compose-проверка:
+
+```bash
+docker compose down --volumes
+docker compose up --build --wait
+npm run test:e2e:compose
+```
+
+SQL-проверки через отдельный официальный Supabase CLI-стек выполняются после `docker compose down`:
 
 ```bash
 npx supabase@latest test db

@@ -13,10 +13,13 @@
 
 ## Vercel
 
+- [ ] Выполнить шаги из `docs/vercel-deployment.md`.
 - [ ] Импортировать GitHub-репозиторий.
 - [ ] Выбрать Vite либо задать `npm run build` и output directory `dist`.
 - [ ] Добавить `VITE_SUPABASE_URL` и `VITE_SUPABASE_ANON_KEY` для Production и Preview.
 - [ ] Выполнить deployment и проверить прямое открытие `/objects` и `/tasks/:id`.
+- [ ] Указать production Site URL и разрешённые preview URL в настройках Supabase Auth.
+- [ ] После изменения переменных выполнить redeploy.
 
 ## Приёмка под ролями
 

@@ -33,6 +33,53 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 `service_role`, пароль базы и другие секреты фронтенду не нужны и не должны попадать в `.env`, Vercel или репозиторий.
 
+## Полностью локальный запуск через Docker и Nginx
+
+Для запуска нужны Docker Engine и Docker Compose v2:
+
+```bash
+docker compose up --build --wait
+```
+
+Compose поднимает PostgreSQL, Supabase Auth, PostgREST, Supabase Studio и собранный frontend за Nginx. Миграции применяются автоматически, а демо-пользователи и данные создаются только при их отсутствии.
+
+- CRM: `http://localhost:8080`;
+- Supabase Studio: `http://localhost:54323`;
+- PostgreSQL: `localhost:54322`.
+
+Локальные учётные записи:
+
+- `manager@example.com` — постановщик;
+- `worker1@example.com` — исполнитель;
+- `worker2@example.com` — исполнитель;
+- пароль для всех трёх по умолчанию: `LocalTest123!`.
+
+Эти данные предназначены только для локальной среды и никогда не должны использоваться в облачном проекте.
+
+Просмотр логов и остановка:
+
+```bash
+docker compose logs --follow
+docker compose down
+```
+
+Проверка Auth, REST, RLS и RPC уже запущенного Compose-стека:
+
+```bash
+npm run test:e2e:compose
+```
+
+Чтобы полностью удалить только локальные данные и получить чистую демобазу:
+
+```bash
+docker compose down --volumes
+docker compose up --build --wait
+```
+
+Удаление volume необратимо для локальной базы и никак не затрагивает облачный Supabase. Для другого порта задайте `CRM_WEB_PORT`, а локальный пароль демо-пользователей можно переопределить через `LOCAL_TEST_PASSWORD`.
+
+В Compose зафиксированы версии только необходимых для CRM компонентов Supabase. Nginx отдаёт React и проксирует Auth/REST по тому же адресу. Встроенные JWT и пароли известны публично и предназначены исключительно для локальной разработки; при self-hosted production их обязательно заменяют.
+
 ## Подготовка Supabase
 
 ### Облачный проект
@@ -58,14 +105,14 @@ npx supabase@latest db push
 
 ### Локальный Supabase
 
-При наличии Docker:
+Основной локальный запуск выполняется единым Compose-файлом, как описано выше. Supabase CLI остаётся отдельным инструментом только для SQL- и сквозных проверок:
 
 ```bash
 npx supabase@latest start
 npx supabase@latest db reset
 ```
 
-Локальная регистрация уже отключена в `supabase/config.toml`. Seed по умолчанию выключен, поскольку сначала требуются Auth-пользователи.
+Перед этим остановите Compose командой `docker compose down`, поскольку обе среды используют одинаковые локальные порты. Регистрация отключена и в Compose, и в `supabase/config.toml`.
 
 ## Проверки
 
@@ -129,4 +176,4 @@ npm run test:e2e:ui:docker
 
 Проект готов к импорту в Vercel: build-команда `npm run build`, каталог результата `dist`. Добавьте две переменные `VITE_SUPABASE_*` для Production и Preview. `vercel.json` уже настраивает маршрутизацию SPA.
 
-Полная последовательность и проверка ролей описаны в [чек-листе публикации](docs/deployment-checklist.md).
+Пошаговая инструкция: [деплой на Vercel](docs/vercel-deployment.md). Финальная приёмка: [чек-лист публикации](docs/deployment-checklist.md).
