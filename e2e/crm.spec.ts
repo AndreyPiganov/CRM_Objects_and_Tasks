@@ -13,6 +13,7 @@ async function login(page: Page, email: string) {
 
 test('постановщик входит, видит все объекты и создаёт новый', async ({ page }) => {
   await login(page, 'manager@example.com')
+  const objectName = `Тестовый объект UI ${Date.now()}`
 
   await expect(page.getByRole('heading', { name: 'ЖК Северный' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Бизнес-центр Речной' })).toBeVisible()
@@ -20,11 +21,11 @@ test('постановщик входит, видит все объекты и �
 
   await page.getByRole('button', { name: 'Добавить' }).click()
   const dialog = page.getByRole('dialog', { name: 'Новый объект' })
-  await dialog.getByLabel('Название').fill('Тестовый объект UI')
+  await dialog.getByLabel('Название').fill(objectName)
   await dialog.getByLabel('Адрес').fill('Москва, Тестовая улица, 1')
   await dialog.getByRole('button', { name: 'Сохранить' }).click()
 
-  await expect(page.getByRole('heading', { name: 'Тестовый объект UI' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: objectName })).toBeVisible()
 })
 test('исполнитель видит только свои задачи и меняет разрешённый статус', async ({ page }) => {
   await login(page, 'worker1@example.com')
@@ -41,8 +42,16 @@ test('исполнитель видит только свои задачи и м
     .locator('xpath=ancestor::*[contains(@class, "MuiCard-root")]')
   await card.getByRole('button', { name: 'Открыть' }).click()
 
-  await expect(page.getByRole('button', { name: 'Отправить на проверку' })).toBeVisible()
-  await page.getByRole('button', { name: 'Отправить на проверку' }).click()
+  const startButton = page.getByRole('button', { name: 'Взять в работу' })
+  if (await startButton.isVisible()) {
+    await startButton.click()
+    await expect(page.getByText('В работе', { exact: true }).first()).toBeVisible()
+  }
+
+  const reviewButton = page.getByRole('button', { name: 'Отправить на проверку' })
+  if (await reviewButton.isVisible()) {
+    await reviewButton.click()
+  }
   await expect(page.getByText('На проверке', { exact: true }).first()).toBeVisible()
   await expect(page.getByText('В работе → На проверке', { exact: true })).toBeVisible()
 

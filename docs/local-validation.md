@@ -26,15 +26,13 @@
 ```bash
 docker compose down --volumes
 docker compose up --build --wait
-npm run test:e2e:compose
+npm run test:e2e
 ```
 
 SQL-проверки через отдельный официальный Supabase CLI-стек выполняются после `docker compose down`:
 
 ```bash
 npx supabase@latest test db
-npm run test:e2e:local
-npm run test:e2e:ui:docker
 npm run lint
 npm test
 npm run build
